@@ -55,7 +55,7 @@ final class Document{
 		$this->URL=URL.$this->ID;
 		$this->DIR=ROOT.$this->PATH."/";
 		$this->TITLE=self::getTitle($this->ID);
-		$this->VERSION=(strlen($_GET['version']??'')?$_GET['version']:"latest");
+		$this->VERSION=(strlen($_REQUEST['version']??'')?$_REQUEST['version']:"latest");
 		$this->FILE=$this->DIR."content.md";
 		$this->TIMESTAMP=null;
 		// check if file exist
