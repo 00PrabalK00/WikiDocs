@@ -141,12 +141,18 @@ if($g_act=="store"){
           </div>
         </div>
         <div class="row">
+          <?php /* suggestions only: any extension may be typed, the MIME map is not an allow-list (see helpers/mimetypes/mimetypes.php) */ ?>
+          <datalist id="attachment_extensions_suggestions">
+            <?php foreach(wdf_attachment_extensions_suggested() as $extension): ?>
+              <option value="<?= htmlspecialchars($extension) ?>"></option>
+            <?php endforeach; ?>
+          </datalist>
           <div class="input-field col s12 m5">
-            <input type="text" name="ATTACHMENT_UPLOAD_EXTENSIONS" id="ATTACHMENT_UPLOAD_EXTENSIONS" class="validate" placeholder="<?= $TXT->SettingsATTACHMENT_UPLOAD_EXTENSIONSPlaceholder ?>" value="<?= implode(", ",ATTACHMENT_UPLOAD_EXTENSIONS) ?>">
+            <input type="text" name="ATTACHMENT_UPLOAD_EXTENSIONS" id="ATTACHMENT_UPLOAD_EXTENSIONS" class="validate" list="attachment_extensions_suggestions" placeholder="<?= $TXT->SettingsATTACHMENT_UPLOAD_EXTENSIONSPlaceholder ?>" value="<?= implode(", ",ATTACHMENT_UPLOAD_EXTENSIONS) ?>">
             <label for="ATTACHMENT_UPLOAD_EXTENSIONS"><span class="main-color-text"><?= $TXT->SettingsATTACHMENT_UPLOAD_EXTENSIONS ?></span></label>
           </div>
           <div class="input-field col s12 m7">
-            <input type="text" name="ATTACHMENT_DISPLAY_EXTENSIONS" id="ATTACHMENT_DISPLAY_EXTENSIONS" class="validate" placeholder="<?= $TXT->SettingsATTACHMENT_DISPLAY_EXTENSIONSPlaceholder ?>" value="<?= implode(", ",ATTACHMENT_DISPLAY_EXTENSIONS) ?>">
+            <input type="text" name="ATTACHMENT_DISPLAY_EXTENSIONS" id="ATTACHMENT_DISPLAY_EXTENSIONS" class="validate" list="attachment_extensions_suggestions" placeholder="<?= $TXT->SettingsATTACHMENT_DISPLAY_EXTENSIONSPlaceholder ?>" value="<?= implode(", ",ATTACHMENT_DISPLAY_EXTENSIONS) ?>">
             <label for="ATTACHMENT_DISPLAY_EXTENSIONS"><span class="main-color-text"><?= $TXT->SettingsATTACHMENT_DISPLAY_EXTENSIONS ?></span></label>
           </div>
         </div>

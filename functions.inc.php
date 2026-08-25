@@ -260,6 +260,28 @@ function wdf_mimetype_allowed(string $extension,?string $type):bool{
 }
 
 /**
+ * Attachment Extensions Suggested
+ *
+ * List of extensions to suggest while configuring the attachment extension
+ * settings, taken from the MIME map and stripped of the extensions that are
+ * denied outright.
+ *
+ * These are suggestions and not an allow-list: the MIME map only describes the
+ * content types that are plausible for an extension, so an extension missing
+ * from it can still be configured by typing it in.
+ *
+ * @return array Sorted list of lowercase extensions
+ */
+function wdf_attachment_extensions_suggested():array{
+  $extensions=array_keys(wdf_mimetypes());
+  if(defined("ATTACHMENT_DENIED_EXTENSIONS")){
+    $extensions=array_diff($extensions,ATTACHMENT_DENIED_EXTENSIONS);
+  }
+  sort($extensions);
+  return $extensions;
+}
+
+/**
  * Timestamp Format
  *
  * @param ?int $timestamp Unix timestamp

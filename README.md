@@ -120,6 +120,11 @@ there, copy `helpers/mimetypes/sample.mimetypes-custom.php` to
 defaults and are not overwritten by an upgrade, so the shipped map never needs
 to be edited.
 
+The extensions in the map are offered as suggestions on the attachment settings
+in `settings.php`. They are only suggestions: the MIME map describes the content
+types that are plausible for an extension, so an extension missing from it can
+still be typed in and allowed.
+
 
 
 ## Developers
