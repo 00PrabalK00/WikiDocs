@@ -544,23 +544,12 @@ function attachment_upload_ajax(){
     echo json_encode(array("error"=>1,"code"=>"extension_not_allowed","file"=>$attachment));
     return false;
   }
-  /*
-  // check file type
-  // note: temporarily disabled - consider adding definition files
-  if(!in_array($attachment["type"],array(
-    "application/pdf",
-    "application/msword",
-    "application/vnd.ms-excel",
-    "application/vnd.ms-powerpoint",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-  ))){
+  // check file type (see helpers/mimetypes/mimetypes.php)
+  if(!wdf_mimetype_allowed($attachment['ext'],$attachment["type"] ?? null)){
     echo json_encode(array("error"=>1,"code"=>"file_not_allowed","file"=>$attachment));
     return false;
   }
-  */
-  // check file size (limit to 10 MB)
+  // check file size (limit to 256 MB)
   if($attachment['size'] > 256 * 1024 * 1024) {
     echo json_encode(array("error"=>1,"code"=>"file_too_large","size"=>$attachment['size']));
     return false;
