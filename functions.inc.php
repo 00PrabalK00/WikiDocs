@@ -282,6 +282,84 @@ function wdf_attachment_extensions_suggested():array{
 }
 
 /**
+ * Attachment Extensions Allow All
+ *
+ * An attachment extension setting has three states: an empty list allows
+ * nothing, a list containing the wildcard "*" allows every extension that is
+ * not denied outright, and any other list allows only the extensions it
+ * contains.
+ *
+ * @param array $extensions Configured extension list
+ * @return bool True if the list is the wildcard "allow everything" state
+ */
+function wdf_attachment_extensions_all(array $extensions):bool{
+  return in_array(ATTACHMENT_EXTENSIONS_WILDCARD,$extensions,true);
+}
+
+/**
+ * Attachment Extension Allowed
+ *
+ * Check an extension against one of the attachment extension settings, honoring
+ * the three states described in wdf_attachment_extensions_all() and the
+ * extensions that are denied regardless of configuration.
+ *
+ * @param string $extension File extension (case insensitive)
+ * @param array $extensions Configured extension list
+ * @return bool True if the extension may be uploaded or displayed
+ */
+function wdf_attachment_extension_allowed(string $extension,array $extensions):bool{
+  $extension=strtolower(trim($extension));
+  if(!strlen($extension)){return false;}
+  // never allow a denied extension, whatever the configuration says
+  if(defined("ATTACHMENT_DENIED_EXTENSIONS") && in_array($extension,ATTACHMENT_DENIED_EXTENSIONS,true)){return false;}
+  // no extension configured, nothing is allowed
+  if(!count($extensions)){return false;}
+  // wildcard configured, everything not denied is allowed
+  if(wdf_attachment_extensions_all($extensions)){return true;}
+  return in_array($extension,$extensions,true);
+}
+
+/**
+ * Attachment Extensions Label
+ *
+ * Human readable rendering of an attachment extension setting, used to explain
+ * the configured state in the interface.
+ *
+ * @param array $extensions Configured extension list
+ * @return string Comma separated extensions, the wildcard, or an empty string
+ */
+function wdf_attachment_extensions_label(array $extensions):string{
+  if(!count($extensions)){return "";}
+  if(wdf_attachment_extensions_all($extensions)){return ATTACHMENT_EXTENSIONS_WILDCARD;}
+  return implode(", ",$extensions);
+}
+
+/**
+ * Attachment Extensions Sanitize
+ *
+ * Parse the comma separated extension list submitted from setup or settings
+ * into the stored configuration array. The wildcard "*" collapses the whole
+ * list to the "allow everything" state and denied extensions are dropped, so
+ * the stored value always describes exactly one of the three states.
+ *
+ * @param ?string $input Comma separated extensions
+ * @return array Normalized extension list
+ */
+function wdf_attachment_extensions_sanitize(?string $input):array{
+  $extensions=array();
+  foreach(explode(",",(string)$input) as $extension){
+    $extension=strtolower(trim($extension));
+    if($extension===ATTACHMENT_EXTENSIONS_WILDCARD){return array(ATTACHMENT_EXTENSIONS_WILDCARD);}
+    $extension=preg_replace('/[^a-z0-9]/','',$extension);
+    if(!strlen($extension)){continue;}
+    if(defined("ATTACHMENT_DENIED_EXTENSIONS") && in_array($extension,ATTACHMENT_DENIED_EXTENSIONS,true)){continue;}
+    if(in_array($extension,$extensions,true)){continue;}
+    $extensions[]=$extension;
+  }
+  return $extensions;
+}
+
+/**
  * Timestamp Format
  *
  * @param ?int $timestamp Unix timestamp
